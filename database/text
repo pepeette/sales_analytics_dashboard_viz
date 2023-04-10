@@ -1,0 +1,19 @@
+Sataset comporises of 4 years of sales data to be rendered into a sales dashboard
+
+1. Project scoping / upgrade Venv >> dash and streamlit to add 
+2. What value for the business Dashboard for piloting OPs/ Sales
+
+< Sales MtD, vspast year, YtD, o/n (overnight) 
+. Client trend : # of orders - # of sku per order-  # of codes - open orders - drafts
+. Which clients have dropped since when? // see their seasonality when they ordered // occurrence of orders // basket size
+. Margin /client /group /item /month // discounted price used
+. Draft vs balance
+. Item trends : populars / discount / new arrival
+. Cash flow mgmt : incoming payments / out coming payments / flag item pending / inventory stuck
+. vendor management : pending PO to confirm
+
+3. Id best impact visual Trend sales / seasonality / amount & proportion  >> Sales / year / month >> top 3 contributors   >> MtD vs past and past*2 >> most qty *sku >> CHOOSE DATE : gives MtD and YtD vs last and 2y no matter date >> CHOOSE CLIENT >> spits out month of orders  
+4. Generate manipulation ; id all callbacks and functions select client DONE  select period >> REFINE BY Y/M/W select year > filter client > sku   
+5. Landing page visuals Sales Ltd/ Ltd vs past  Least returning clients (top.tail()) Open orders overnight  
+6. Rendering -> output via notebook -> output via powerB -> output via streamlit > output via voila or dash 
+7. Scaling
