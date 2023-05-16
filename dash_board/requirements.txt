@@ -1,0 +1,10 @@
+dash
+pandas
+dash-bootstrap-components
+plotly
+pymysql
+Flask-Caching
+mysqlclient
+dash-extensions
+mysql-connector-python
+dash-auth
