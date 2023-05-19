@@ -15,15 +15,14 @@ import dash
 import dash_auth
 from dash import dash_table
 from dash.dash_table.Format import Group
-from dash import dcc
-from dash import html
-from dash.dependencies import Input, Output, State, ClientsideFunction, MATCH, ALL, ClientsideFunction, Output, Input
+from dash import html, dcc
+from dash.dependencies import Input, Output, State, ClientsideFunction, MATCH, ALL, ClientsideFunction
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 import time
 from datetime import datetime, date, time, timedelta
 from dateutil.relativedelta import relativedelta
-import mysql.connector
+#import mysql.connector
 import pymysql
 pymysql.install_as_MySQLdb()
 from flask_caching import Cache
@@ -178,25 +177,26 @@ def update_data(n_clicks, data):
     # Get the last row of the DataFrame
     last_row = df.tail(1)
    # Return the table with the last row of data
-    return dbc.Container([
-        html.H6('Last row of Data Table'),
-        dash_table.DataTable(
-            id='table',
-            columns=[{"name": i, "id": i} for i in last_row.columns],
-            data=last_row.to_dict('records'),
-            style_cell={'textAlign': 'center'},
-            style_header={
-                'backgroundColor': 'rgb(230, 230, 230)',
-                'fontWeight': 'bold'
-            },
-            style_data_conditional=[
-                {
-                    'if': {'row_index': 'odd'},
-                    'backgroundColor': 'rgb(248, 248, 248)'
-                }
-            ]
-        )
-    ])
+    return html.Div()
+    # return dbc.Container([
+    #     html.H6('Last row of Data Table'),
+    #     dash_table.DataTable(
+    #         id='table',
+    #         columns=[{"name": i, "id": i} for i in last_row.columns],
+    #         data=last_row.to_dict('records'),
+    #         style_cell={'textAlign': 'center'},
+    #         style_header={
+    #             'backgroundColor': 'rgb(230, 230, 230)',
+    #             'fontWeight': 'bold'
+    #         },
+    #         style_data_conditional=[
+    #             {
+    #                 'if': {'row_index': 'odd'},
+    #                 'backgroundColor': 'rgb(248, 248, 248)'
+    #             }
+    #         ]
+    #     )
+    # ])
 
 def load_cached_data():
     cached_data = cache.get('data')
@@ -947,3 +947,4 @@ app.layout = html.Div([
 if __name__ == '__main__':
     Timer(1, open_browser).start();
     app.run_server(debug=True, use_reloader=False, port=8090)
+    #app.run_server(host='0.0.0.0', port=8090, debug=True)

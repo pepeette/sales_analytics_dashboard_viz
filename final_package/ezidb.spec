@@ -1,14 +1,21 @@
 # -*- mode: python ; coding: utf-8 -*-
+
 import sys ; sys.setrecursionlimit(sys.getrecursionlimit() * 5)
 
 block_cipher = None
 
 
 a = Analysis(
-    ['EZiDB.py'],
+    ['ezidb.py'],
     pathex=[],
     binaries=[],
-    datas=[('current.csv', '.'), ('currentsql.csv', '.'), ('pastfour.csv', '.'), ('requirements.txt', '.')],
+    datas=[
+        ('requirements.txt', '.'),
+        ('credentials.py', '.'),
+        ('current.csv', '.'),
+        ('currentsql.csv', '.'),
+        ('pastfour.csv', '.'),
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -24,27 +31,21 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
     pyz,
     a.scripts,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
     [],
-    exclude_binaries=True,
     name='ezidb',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
+    upx_exclude=[],
+    runtime_tmpdir=None,
     console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-)
-coll = COLLECT(
-    exe,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='ezidb',
 )
