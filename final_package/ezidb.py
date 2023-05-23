@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-import sys
+
 import os
 import json
 import pandas as pd
@@ -26,16 +26,15 @@ from dateutil.relativedelta import relativedelta
 import pymysql
 pymysql.install_as_MySQLdb()
 from flask_caching import Cache
-#from dash_extensions.enrich import DashProxy, Output, Input, State, ServersideOutput, ServersideOutputTransform
 from credentials import VALID_USERNAME_PASSWORD_PAIRS
 import webbrowser as web
 from threading import Timer
 
 # Call data preprocessing function to preprocess data
 data = None  # Set global_data to None to force a reload of data
-#web.open_new_tab('http://127.0.0.1:8090/')
+#web.open_new_tab('http://127.0.0.1:8080/')
 def open_browser():
-    web.open_new("http://localhost:{}".format(8090))
+    web.open_new("http://localhost:{}".format(8080))
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED], meta_tags=[{"name": "viewport", "content": "width=device-width"}])
 app.title = 'Dashboard'
@@ -52,7 +51,8 @@ cache.clear()
 # Create a dcc.Store component to store the data
 store = dcc.Store(id='local', storage_type='local')
 # Get the path of the current script
-current_dir = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+#current_dir = '/Users/laetitiahoquetis/Downloads/Python/Dashboard/'
 
 # define a function to preprocess the data
 def preprocess_data(df):
@@ -946,5 +946,5 @@ app.layout = html.Div([
 #app.layout = app_layout
 if __name__ == '__main__':
     Timer(1, open_browser).start();
-    app.run_server(debug=True, use_reloader=False, port=8090)
-    #app.run_server(host='0.0.0.0', port=8090, debug=True)
+    #app.run_server(debug=True, use_reloader=False, port=8080)
+    app.run_server(host='0.0.0.0', port=8080, debug=False)
