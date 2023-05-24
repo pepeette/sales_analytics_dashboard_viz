@@ -1,0 +1,6 @@
+host ezi-tunnel.production
+    HostName i-0a052ec636929b05d
+    User ec2-user
+    Localforward 3335 inventory-production-cluster.cluster-ro-cgghhgpzooi6.us-west-1.rds.amazonaws.com:3306
+    IdentityFile ~/.ssh/pem/ez-group-prod.pem
+    ProxyCommand sh -c "aws ssm start-session  --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
