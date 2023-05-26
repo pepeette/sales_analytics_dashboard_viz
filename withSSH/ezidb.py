@@ -30,6 +30,8 @@ from credentials import VALID_USERNAME_PASSWORD_PAIRS
 import webbrowser as web
 from threading import Timer
 from sshtunnel import SSHTunnelForwarder
+import paramiko
+import subprocess
 
 # Call data preprocessing function to preprocess data
 data = None  # Set global_data to None to force a reload of data
@@ -82,27 +84,51 @@ def load_current():
     return clean_data
 
 # SSH connection parameters
-def establish_ssh_tunnel(local_port):
-    ec2_instance_id = 'i-0a052ec636929b05d'
-    ssh_username = 'ec2-user'
+def ssh_tunnel():
+    # SSH connection details
     ssh_key_path = '/Users/laetitiahoquetis/.ssh/pem/ez-group-prod.pem'
-    rds_host = 'inventory-production-cluster.cluster-ro-cgghhgpzooi6.us-west-1.rds.amazonaws.com'
-    rds_port = 3306
+    bastion_host = '11.1.10.199'
+    bastion_username = 'ec2-user'
+    private_instance_id = 'i-0a052ec636929b05d'
+    private_instance_username = 'ec2-user'
 
-    with SSHTunnelForwarder(ec2_instance_id,
-                            ssh_username=ssh_username,
-                            ssh_pkey=ssh_key_path,
-                            remote_bind_address=(rds_host, rds_port)) as tunnel:
-        return tunnel.local_bind_port
+    # AWS SSM ProxyCommand
+    proxy_command = "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
+
+    # Local port for tunneling
+    local_port = 3335
+
+    # Retrieve the bastion host IP using AWS CLI
+    result = subprocess.run(
+        ['aws', 'ec2', 'describe-instances', '--instance-ids', bastion_host, '--query', 'Reservations[0].Instances[0].PublicIpAddress', '--output', 'text'],
+        capture_output=True,
+        text=True
+    )
+    bastion_public_ip = result.stdout.strip()
+
+    # Create SSH client and connect to bastion host
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client.connect(
+        hostname=bastion_public_ip,
+        username=bastion_username,
+        key_filename=ssh_key_path
+    )
+
+    # Execute AWS SSM ProxyCommand to establish the tunnel
+    command = f"ssh -i {ssh_key_path} -o 'ProxyCommand {proxy_command}' -L {local_port}:inventory-production-cluster.cluster-ro-cgghhgpzooi6.us-west-1.rds.amazonaws.com:3306 {private_instance_username}@{private_instance_id}"
+    stdin, stdout, stderr = client.exec_command(command)
+    # Wait for the tunnel to be established (you can add additional error handling here)
+        
 
 # Set up the database connection
 def get_database_connection():
-    local_port = establish_ssh_tunnel(3335)
+    local_port = ssh_tunnel()
     connection = pymysql.connect(
         host = '127.0.0.1',
         user = 'readonly',
         password = 'MwLvD9DFL8mnrTKkI6fU',
-        port = local_port, #3335
+        port = 3335,
         #DB_NAME = 'mydatabase',
     )
     return connection
@@ -144,8 +170,7 @@ def load_current_sql():
     clean_df.to_csv('currentsql.csv', index=False)
     #cache.set('data', df.to_dict('records'))
     connection.close()
-    ssh_tunnel.close()
-    ssh_client.close()
+    tunnel.close
     #return pd.DataFrame.from_dict(df)
     return clean_df
 
