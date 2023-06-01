@@ -3,6 +3,7 @@
 
 import os
 import json
+import logging
 import pandas as pd
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -35,6 +36,8 @@ data = None  # Set global_data to None to force a reload of data
 #web.open_new_tab('http://127.0.0.1:8080/')
 def open_browser():
     web.open_new("http://192.168.1.103:{}".format(8080))
+
+pd.options.mode.chained_assignment = None 
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED], meta_tags=[{"name": "viewport", "content": "width=device-width"}])
 app.title = 'Dashboard'
@@ -945,6 +948,8 @@ app.layout = html.Div([
 # Set the app layout
 #app.layout = app_layout
 if __name__ == '__main__':
-    Timer(1, open_browser).start();
+    logging.getLogger('werkzeug').setLevel(logging.ERROR)  # Set Werkzeug logger to ERROR level
+    logging.getLogger('gunicorn').setLevel(logging.ERROR)  # Set Gunicorn logger to ERROR level
+    Timer(1, open_browser).start()
     #app.run_server(debug=True, use_reloader=False, port=8080)
     app.run_server(host='192.168.1.103', port=8080, debug=False)
