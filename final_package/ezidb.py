@@ -34,7 +34,7 @@ from threading import Timer
 data = None  # Set global_data to None to force a reload of data
 #web.open_new_tab('http://127.0.0.1:8080/')
 def open_browser():
-    web.open_new("http://localhost:{}".format(8080))
+    web.open_new("http://192.168.1.103:{}".format(8080))
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.UNITED], meta_tags=[{"name": "viewport", "content": "width=device-width"}])
 app.title = 'Dashboard'
@@ -947,4 +947,4 @@ app.layout = html.Div([
 if __name__ == '__main__':
     Timer(1, open_browser).start();
     #app.run_server(debug=True, use_reloader=False, port=8080)
-    app.run_server(host='0.0.0.0', port=8080, debug=False)
+    app.run_server(host='192.168.1.103', port=8080, debug=False)
