@@ -1,1 +1,2 @@
 with embedding ssh tunelling for the sql access
+ssh -i ~/.ssh/pem/ez-group-prod.pem -o "ProxyCommand sh -c 'aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters \"portNumber=%p\"'" -L 3335:inventory-production-cluster.cluster-ro-cgghhgpzooi6.us-west-1.rds.amazonaws.com:3306 ec2-user@i-033c13181661a1504
